@@ -21,7 +21,7 @@ CONFIG = {
     "students": "Arda Işık, <partner name>",
     "course": "Creation and Administration of Cloud Based Applications",
     "teacher": "dr inż. Aleksander Rewak",
-    "github_repo": "https://github.com/<user>/barber-management-system",
+    "github_repo": "https://github.com/iskarda793-cmd/barber-management-system",
     "aca_url": "https://barber-app.<random>.swedencentral.azurecontainerapps.io",
     "render_url": "https://barber-management-system.onrender.com",
 }
