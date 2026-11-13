@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Services · Barber Management System{% endblock %}
+{% block content %}
+<h1>Services</h1>
+
+<div class="card">
+    <h3 style="margin-top:0">{{ "Edit service #%d"|format(editing.id) if editing else "Add service" }}</h3>
+    <form method="post" action="{{ url_for('page_save', resource='services', row_id=editing.id) if editing else url_for('page_save', resource='services') }}">
+        <div class="form-grid">
+            <div><label>Name *</label>
+                <input name="name" required value="{{ editing.name if editing else '' }}"></div>
+            <div><label>Duration (minutes) *</label>
+                <input type="number" min="1" name="duration_minutes" required value="{{ editing.duration_minutes if editing else '' }}"></div>
+            <div><label>Price (zł) *</label>
+                <input type="number" min="0" step="0.01" name="price" required value="{{ editing.price if editing else '' }}"></div>
+            <div>
+                <button class="btn gold" type="submit">{{ "Save changes" if editing else "Add service" }}</button>
+                {% if editing %}<a class="btn light" href="/services">Cancel</a>{% endif %}
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="card">
+    <h3 style="margin-top:0">All services ({{ rows|length }})</h3>
+    {% if rows %}
+    <table>
+        <tr><th>#</th><th>Name</th><th>Duration</th><th>Price</th><th></th></tr>
+        {% for s in rows %}
+        <tr>
+            <td>{{ s.id }}</td>
+            <td><strong>{{ s.name }}</strong></td>
+            <td>{{ s.duration_minutes }} min</td>
+            <td>{{ "%.2f"|format(s.price) }} zł</td>
+            <td class="actions">
+                <a class="btn sm light" href="{{ url_for('page', resource='services', row_id=s.id) }}">Edit</a>
+                <form class="inline" method="post" action="{{ url_for('page_delete', resource='services', row_id=s.id) }}"
+                      onsubmit="return confirm('Delete this service?')">
+                    <button class="btn sm red" type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p class="muted">No services yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

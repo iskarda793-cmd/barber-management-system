@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Appointments · Barber Management System{% endblock %}
+{% block content %}
+<h1>Appointments</h1>
+
+<div class="card">
+    <h3 style="margin-top:0">{{ "Edit appointment #%d"|format(editing.id) if editing else "New appointment" }}</h3>
+    {% if not barbers or not services %}
+    <p class="alert err">Add at least one <a href="/barbers">barber</a> and one <a href="/services">service</a> first.</p>
+    {% endif %}
+    <form method="post" action="{{ url_for('page_save', resource='appointments', row_id=editing.id) if editing else url_for('page_save', resource='appointments') }}">
+        <div class="form-grid">
+            <div><label>Customer name *</label>
+                <input name="customer_name" required value="{{ editing.customer_name if editing else '' }}"></div>
+            <div><label>Customer phone</label>
+                <input name="customer_phone" value="{{ editing.customer_phone or '' if editing else '' }}"></div>
+            <div><label>Barber *</label>
+                <select name="barber_id" required>
+                    {% for b in barbers %}
+                    <option value="{{ b.id }}" {{ 'selected' if editing and editing.barber_id == b.id }}>{{ b.name }}</option>
+                    {% endfor %}
+                </select></div>
+            <div><label>Service *</label>
+                <select name="service_id" required>
+                    {% for s in services %}
+                    <option value="{{ s.id }}" {{ 'selected' if editing and editing.service_id == s.id }}>
+                        {{ s.name }} – {{ s.duration_minutes }} min – {{ "%.2f"|format(s.price) }} zł</option>
+                    {% endfor %}
+                </select></div>
+            <div><label>Date &amp; time *</label>
+                <input type="datetime-local" name="appointment_time" required
+                       value="{{ editing.appointment_time.strftime('%Y-%m-%dT%H:%M') if editing else '' }}"></div>
+            <div><label>Status</label>
+                <select name="status">
+                    {% for st in statuses %}
+                    <option value="{{ st }}" {{ 'selected' if editing and editing.status == st }}>{{ st|capitalize }}</option>
+                    {% endfor %}
+                </select></div>
+            <div style="grid-column:1/-1"><label>Notes</label>
+                <input name="notes" value="{{ editing.notes or '' if editing else '' }}"></div>
+        </div>
+        <div style="margin-top:14px">
+            <button class="btn gold" type="submit">{{ "Save changes" if editing else "Add appointment" }}</button>
+            {% if editing %}<a class="btn light" href="/appointments">Cancel</a>{% endif %}
+        </div>
+    </form>
+</div>
+
+<div class="card">
+    <h3 style="margin-top:0">All appointments ({{ rows|length }})</h3>
+    {% if rows %}
+    <table>
+        <tr><th>#</th><th>When</th><th>Customer</th><th>Barber</th><th>Service</th><th>Price</th><th>Status</th><th>Notes</th><th></th></tr>
+        {% for a in rows %}
+        <tr>
+            <td>{{ a.id }}</td>
+            <td>{{ a.appointment_time.strftime('%d.%m.%Y %H:%M') }}</td>
+            <td>{{ a.customer_name }}<br><span class="muted">{{ a.customer_phone or '' }}</span></td>
+            <td>{{ a.barber_name }}</td>
+            <td>{{ a.service_name }}</td>
+            <td>{{ "%.2f"|format(a.price) }} zł</td>
+            <td><span class="badge {{ a.status }}">{{ a.status }}</span></td>
+            <td class="muted">{{ a.notes or '' }}</td>
+            <td class="actions">
+                <a class="btn sm light" href="{{ url_for('page', resource='appointments', row_id=a.id) }}">Edit</a>
+                <form class="inline" method="post" action="{{ url_for('page_delete', resource='appointments', row_id=a.id) }}"
+                      onsubmit="return confirm('Delete this appointment?')">
+                    <button class="btn sm red" type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p class="muted">No appointments yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Dashboard</h1>
+
+{% if db_error %}
+<div class="alert err">❌ <strong>Database status:</strong> {{ db_error }}</div>
+{% else %}
+<div class="alert ok">
+    ✅ <strong>Database status:</strong> Connected to <strong>{{ db_name }}</strong> on {{ db_host }}
+    · App running on <strong>{{ platform }}</strong><br>
+    <span class="muted">{{ db_version }}</span>
+</div>
+
+<div class="grid">
+    <div class="stat"><div class="num">{{ stats.today }}</div><div class="lbl">Appointments today</div></div>
+    <div class="stat"><div class="num">{{ stats.upcoming }}</div><div class="lbl">Upcoming (scheduled)</div></div>
+    <div class="stat"><div class="num">{{ stats.barbers }}</div><div class="lbl">Barbers</div></div>
+    <div class="stat"><div class="num">{{ stats.services }}</div><div class="lbl">Services</div></div>
+    <div class="stat"><div class="num">{{ "%.0f"|format(stats.revenue) }} zł</div><div class="lbl">Revenue (completed)</div></div>
+</div>
+
+<div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+        <h3 style="margin:0">Upcoming appointments</h3>
+        <a class="btn gold" href="/appointments">+ New appointment</a>
+    </div>
+    {% if upcoming %}
+    <table style="margin-top:12px">
+        <tr><th>When</th><th>Customer</th><th>Barber</th><th>Service</th><th>Price</th></tr>
+        {% for a in upcoming %}
+        <tr>
+            <td>{{ a.appointment_time.strftime('%a %d.%m.%Y %H:%M') }}</td>
+            <td>{{ a.customer_name }}</td>
+            <td>{{ a.barber_name }}</td>
+            <td>{{ a.service_name }} <span class="muted">({{ a.duration_minutes }} min)</span></td>
+            <td>{{ "%.2f"|format(a.price) }} zł</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p class="muted">No upcoming appointments.</p>
+    {% endif %}
+</div>
+{% endif %}
+{% endblock %}

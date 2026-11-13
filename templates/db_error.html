@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Database unavailable</h1>
+<div class="alert err">❌ <strong>Could not connect to PostgreSQL ({{ db_name }}@{{ db_host }}):</strong><br>{{ db_error }}</div>
+<p class="muted">Check the database environment variables (DATABASE_URL or DB_HOST / DB_USER / DB_PASSWORD / DB_SSLMODE)
+    and the database firewall settings.</p>
+{% endblock %}

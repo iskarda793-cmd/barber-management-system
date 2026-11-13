@@ -1,0 +1,15 @@
+.venv
+venv
+__pycache__
+*.pyc
+*.pyo
+.git
+.gitignore
+.github
+.env
+.env.*
+*.zip
+README.md
+docker-compose.yml
+report
+scripts

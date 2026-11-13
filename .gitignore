@@ -1,0 +1,11 @@
+.venv/
+venv/
+__pycache__/
+*.pyc
+.env
+*.zip
+.DS_Store
+report/report.html
+report/Report.pdf
+log.html
+output.xml
